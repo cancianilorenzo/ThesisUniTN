@@ -16,4 +16,4 @@ jobs:
         with:
           name: pdfs
           path: |
-            test/*.pdf
+            *.pdf
