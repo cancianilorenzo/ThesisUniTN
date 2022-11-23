@@ -1,0 +1,90 @@
+\chapter{TRAP Layer}
+\label{cha:TRAP Layer}
+The TRAP Layer, as mentioned in previous chapters, is the layer that implements the TRAP protocol. The purpose of this layer is to allow reliable communication between nodes by reducing power failure to the limit and thus allowing transmission only under certain conditions. Specifically, communication can only occur if the sending node and the receiving node have sufficient energy levels to send and receive the packet \cite{9733918}.\\
+
+\section{Implementation idea}
+\label{sec:Implementation idea}
+As the protocol is designed, this layer is based on the repeated sending at fixed intervals in time of a series of pulses that encode the node's energy level. On the other hand, the layer must receive the energy levels of neighboring nodes within the network and correctly associate them, through sending frequency recognition, with the transmitting node. For this reason, the basic implementation idea exploits timers on the MSP430 board to perform repetitive burst sending (series of pulses, varying in length depending on the energy accumulated by the node) and interrupt generation to handle incoming bursts.\\
+To correctly associate the incoming burst with the sending node, one possible solution is to have a timer count from the beginning of the reception and stop it at the end of the reception, then, with an easy mathematical calculation, obtain the sending frequency.\\
+Based on the energy level of the node and the energy level received from other nodes, the layer decides whether or not transmission can be made to and from the node.
+
+\section{Layer diagram}
+\label{sec:Layer diagram}
+The figure below represents the TRAP Layer diagram. The input burst, output burst, and outward exposure of evaluation can be observed.\\
+  \begin{figure}[h!]
+    \centerline{\psfig{file=Images/TRAPLayer.png,width=0.5\textwidth}}
+    \caption{\footnotesize \centering TRAP Layer representation}
+    \label{fig:TRAPLayerDiagram}
+  \end{figure}
+ 
+In this implementation, the node energy is simulated within the node. In a real application, the TRAP Layer would be connected to the poles of a capacitor (or a battery) to obtain the current energy level.
+
+\section{Real implementation of the layer}
+\label{sec:Real implementation of the layer}
+Following the implementation idea given above, it is possible to discuss the actual implementation of the layer.
+In particular, the operation is based on the use of four timers. Timers are realized by registers that automatically increment their value with the frequency at which they are configured. On the MSP430 board, timers have several modes of operation: the "UP mode" will be considered in which the timer counts up to a preset value, generates an interrupt, and resets its value to zero restarting counting again if not stopped.\\
+  \begin{figure}[h!]
+    \centerline{\psfig{file=Images/TimerMode.png,width=0.5\textwidth}}
+    \caption{\footnotesize \centering "UP Mode" timer diagram}
+    \label{fig:TimerMode}
+  \end{figure}
+For timer configuration the reference is the site of Texas Instruments, the manufacturer of the board.\\
+Timers used for this layer are:
+\begin{itemize}
+  \item Timer A1 at 250Hz for Burst repetition
+  \item Timer A2 at 1MHz to calculate the frequency in reception
+  \item Timer A3 at 32kHz for burst timeout and avoid glitches
+  \item Timer B0 at 1MHz to create the OOK modulation
+\end{itemize}
+To analyze the operation of the system, we divide it conceptually into transmitting side (TX) and receiving side (RX).
+
+\subsection{TX side of TRAP Layer}
+For proper operation of this part of the Layer, we will use timers A1 and B0 set as above and both in "UP mode". Remember that in this mode the timer will count until the value within the CCRx (capture/compare registers) is reached and then generate an interrupt. The CCR0 register of timer A1 is set to 250 so that there is a one-second delay between one burst and the next, energy level sending frequency is so set to 1 Hz.\\
+In the TRAP Layer, there is an internal function that receives the energy level of the node and encodes it in the form of bursts to obtain the number of pulses to be sent to communicate the correct available power.\\
+\begin{lstlisting}
+//CCR0 register setting of timer B0
+TB0CCR0 = (1000 / (OOK_NODE * 2));
+\end{lstlisting}
+This setting allows the burst sending pin to be toggled at a frequency equal to OOK. Remember that each node has an OOK frequency chosen and set in advance to distinguish it from other nodes in the network. Multiplier 2, in the formula, is used to have the correct number of rising and falling edges; in fact, each time timer B0 generates an interrupt the signal on the burst send pin will be inverted and to have, for example, 64 pulses the signal must be inverted 128 times.\\
+  \begin{figure}[H]
+    \centerline{\psfig{file=Images/TRAPLayerTimer.png,width=0.45\textwidth}}
+    \caption{\footnotesize \centering Block diagram of TRAP Layer TX}
+    \label{fig:TRAPLayerTimer}
+  \end{figure}
+  
+\subsection{RX side of TRAP Layer}
+This side of the layer deals with the reception of bursts and the correct recognition of the transmitting node.\\
+Timers A2 in "Continuous Mode" and A3 in "UP Mode" were used to implement the reception side. Timer A2 is used as a counter to calculate the frequency of receiving pulses. Timer A3 is used to figure out when the burst is finished. When timer A3 end, begin operations to assign the correct received energy level to the network node that transmitted it.\\
+When the first pulse is received on the GPIO pin dedicated to receiving the burst, timer A2 is activated, and timer A3 is restarted each time a new pulse is received. The latter timer is set to count 15 times at a rate of 32kHz; if no further pulses were received in this time interval, it is reasonable to assume that the burst is over. Timer A2 can be stopped, the counted value read, and the evaluations made to decode the energy level and associate it with the correct node.\\
+  \begin{figure}[H]
+    \centerline{\psfig{file=Images/TRAPLayerRX.png,width=0.65\textwidth}}
+    \caption{\footnotesize \centering Diagram of TRAP Layer RX}
+    \label{fig:TRAPLayerRX}
+  \end{figure}
+\begin{lstlisting}
+//Basic implementation idea for the interrupt related to the GPIO pin of the incoming burst
+if (count == 0)
+    {
+        NODE_ID_CR = TASSEL_2 + MC_2 + NODE_IDENTIFICATION_DIVIDER; //Start timer A2
+        BURST_TIMEOUT_CR = TASSEL_1 + MC_1 + ID_3; //Start timer A3
+    }
+    count++;
+    BURST_TIMEOUT_EV = 0; //Stop timer A3
+    BURST_TIMEOUT_EV = TIMEOUT; //Restart timer A3
+\end{lstlisting}
+
+\begin{lstlisting}
+//Basic implementation idea for the interrupt related to the timeout timer (Timer A3)
+if (count > (64 - BURST_GUARD))
+    {
+        frequency = ((float) NODE_IDENTIFICATION_SPEED * (float) count) / 
+        ((float) timerValue);
+    }
+\end{lstlisting}
+
+  
+\newpage
+
+
+
+

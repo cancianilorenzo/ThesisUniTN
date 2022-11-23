@@ -1,51 +1,189 @@
-% book
-% Required fields: author or editor, title, publisher, year. 
-% Optional fields: volume or number, series, address, edition, month, note.
-@book{coulouris,
-  author = {Coulouris  G.  F.,  Dollimore J. e  Kindberg T},
-  title = {Distributed Systems: concepts and Design},
-  publisher = {Addison-Wesley},
-  year = {1994},
-  edition = "second edition"
 
-}
+%TRAP paper
+@ARTICLE{9733918,  author={Torrisi, Alessandro and Yıldırım, Kasım Sinan and Brunelli, Davide},  journal={IEEE Sensors Journal},   title={Reliable Transiently-Powered Communication},   year={2022},  volume={22},  number={9},  pages={9124\-9134},  doi={10.1109/JSEN.2022.3158736}}
 
-% article
-% Required fields: author, title, journal, year. 
-% Optional fields: volume, number, pages, month, note.
-@article{donoho,
-  author = {Donoho D. L.},
-  title = {Compressed Sensing},
-  journal = {IEEE Trans. Inf. Theory},
-  volume = {52},
-  number = {4},
-  pages = {1289-1306},
-  year = {2006}
-}
-
-% conference
-% same as inproceedings
-% Required fields: author, title, booktitle, year. 
-% Optional fields: editor, volume or number, series, pages, address, month, organization, publisher, note
-@conference{dalal,
-  author = {Dalal N., Triggs B.},
-  title = {Histograms of Oriented Gradients for Human Detection},
-  booktitle = {Computer Vision and Pattern Recognition (CVPR)},
-  address = {San Diego, USA},
-  year = {2005},
-  month = {20-26 June},
-  pages = {886-893}
-}
-
-% website
-% as misc
-% Required fields: none. 
-% Optional fields: author, title, howpublished, month, year, note.
-@misc{ictbusiness,
-  title = {ICT business},
-  howpublished = {http://www.ictbusiness.it/},
-  note = {ultimo accesso 15/06/2015}
+%MSP430 guide
+@online{MSP430UserGuide,
+    author = {Texas Instruments},
+    title = {MSP430FR58XX, msp430fr59xx, and MSP430FR6xx family \- Texas Instruments},
+    url  = {https://www.ti.com/lit/ug/slau367p/slau367p.pdf},
+    addendum = {(accessed: 23.08.2022)},
 }
 
 
+%BLE Module
+@online{BLEModule,
+    author = {Silicon Labs},
+    title = {BGM220S Wireless Gecko Bluetooth® Module Data Sheet},
+    url  = {https://www.mouser.it/datasheet/2/368/bgm220s_datasheet-1900902.pdf},
+    addendum = {(accessed: 27.08.2022)},
+}
 
+
+%DHT11 sensor
+@online{DHT11Module,
+    author = {OSEPP Electronics},
+    title = {DHT11 Humidity \& Temperature Sensor},
+    url  = {https://www.mouser.com/datasheet/2/758/DHT11-Technical-Data-Sheet-Translated-Version-1143054.pdf},
+    addendum = {(accessed: 27.08.2022)},
+}
+
+%MSP430FRAMDATASHEET
+@online{MSP430FRAMDS,
+    author ={Goh, William and Dannenberg, Andreas and He, Johnson},
+    title = {MSP430™ FRAM Technology-How To and Best Practices},
+    url  = {https://www.ti.com/lit/an/slaa628b/slaa628b.pdf?ts=1661692275410&ref_url=https\%253A\%252F\%252F},
+    addendum = {(accessed: 28.08.2022)},
+}
+
+
+%bacteria
+@inproceedings{10.1145/3362053.3363491,
+author = {Nardello, Matteo and Desai, Harsh and Brunelli, Davide and Lucia, Brandon},
+title = {Camaroptera: A Batteryless Long-Range Remote Visual Sensing System},
+year = {2019},
+isbn = {9781450370103},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3362053.3363491},
+doi = {10.1145/3362053.3363491},
+abstract = {Batteryless image sensors present an opportunity for pervasive wide-spread remote sensor deployments that require little maintenance and have low cost. However, the reliance of these devices on energy harvesting presents tight constraints in the quantity of energy that can be stored and used, as well as limited, energy-dependent availability. In this work, we develop Camaroptera, the first batteryless, energy-harvesting image sensing platform to support active, long-range communication. Camaroptera reduces the high latency and energy cost of communication by using near-sensor processing pipelines to identify interesting images and transmit them to a far-away base station, while discarding uninteresting images. Camaroptera also dynamically adapts its processing pipeline to maximize system availability and responsiveness to interesting events in different harvesting conditions. We fully prototype the Camaroptera hardware platform in a compact, 2cm x 3cm x 5cm volume, composed of three adjoined circuit boards. We evaluate Camaroptera demonstrating the viability of a batteryless remote sensing platform in a small package. We show that compared to a system that transmits all image data, Camaroptera's processing pipelines and adaptive processing scheme captures and sends 2-5X more images of interest to an application.},
+booktitle = {Proceedings of the 7th International Workshop on Energy Harvesting \& Energy-Neutral Sensing Systems},
+pages = {8–14},
+numpages = {7},
+keywords = {Sensor systems, Edge computing, Intermittent computing, Computer vision, Energy-harvesting},
+location = {New York, NY, USA},
+series = {ENSsys'19}
+}
+
+%Solar energy
+@INPROCEEDINGS{7479815,  author={Sartori, Davide and Brunelli, Davide},  booktitle={2016 IEEE Sensors Applications Symposium (SAS)},   title={A smart sensor for precision agriculture powered by microbial fuel cells},   year={2016},  volume={},  number={},  pages={1\-6},  doi={10.1109/SAS.2016.7479815}}
+
+
+%RF energy
+@article{article,
+author = {Chae, Hee\-Jin and Yeager, Daniel and Smith, Joshua and Fu, Kevin},
+year = {2013},
+month = {01},
+pages = {},
+title = {Wirelessly Powered Sensor Networks and Computational RFID},
+isbn = {978-1-4419-6165-5},
+doi = {10.1007/978-1-4419-6166-2_10},
+journal={Springer Science \& Business Media}
+}
+
+
+%VLC Communication
+@article{VLCCOmm,
+author = {Cevik, Taner and YILMAZ, Serdar},
+year = {2015},
+month = {11},
+pages = {139\-150},
+title = {An Overview of Visible Light Communication Systems},
+volume = {7},
+journal = {International Journal of Computer Networks and Communications},
+doi = {10.5121/ijcnc.2015.7610}
+}
+
+%Transient computing
+@InProceedings{transientComp,
+author="Torrisi, Alessandro
+and Y{\i}ld{\i}r{\i}m, Kas{\i}m Sinan
+and Brunelli, Davide",
+editor="Saponara, Sergio
+and De Gloria, Alessandro",
+title="Enabling Transiently-Powered Communication via Backscattering Energy State Information",
+booktitle="Applications in Electronics Pervading Industry, Environment and Society",
+year="2021",
+publisher="Springer International Publishing",
+address="Cham",
+pages="192--201",
+abstract="The growing interest in ultra-low-power wireless sensors powered directly by energy harvesters has revealed one of the major drawbacks of such battery-less devices, which is engaging communication between nodes, without wasting energy due to unavailable receivers. Backscatter communication enables low-power communication by eliminating energy-hungry hardware components and can communicate if IoT devices are ready to receive even at zero-energy onboard. In this paper, we present the design of a backscatter radio mechanism that is used as a feedback channel to transmit the energy state information almost for free. Simulation results demonstrate the effectiveness of our approach designed according to the novel approach of ``transient computing''.",
+isbn="978-3-030-66729-0"
+}
+
+
+%Battery degradation
+@article{BatteryDegradation,
+title = {Battery Lifetime Prognostics},
+journal = {Joule},
+volume = {4},
+number = {2},
+pages = {310-346},
+year = {2020},
+issn = {2542-4351},
+doi = {https://doi.org/10.1016/j.joule.2019.11.018},
+url = {https://www.sciencedirect.com/science/article/pii/S2542435119305859},
+author = {Xiaosong Hu and Le Xu and Xianke Lin and Michael Pecht},
+keywords = {lithium-ion battery, degradation mechanisms, remaining useful life, model based, data driven, hybrid approaches},
+abstract = {Summary
+Lithium-ion batteries have been widely used in many important applications. However, there are still many challenges facing lithium-ion batteries, one of them being degradation. Battery degradation is a complex problem, which involves many electrochemical side reactions in anode, electrolyte, and cathode. Operating conditions affect degradation significantly and therefore the battery lifetime. It is of extreme importance to achieve accurate predictions of the remaining battery lifetime under various operating conditions. This is essential for the battery management system to ensure reliable operation and timely maintenance and is also critical for battery second-life applications. After introducing the degradation mechanisms, this paper provides a timely and comprehensive review of the battery lifetime prognostic technologies with a focus on recent advances in model-based, data-driven, and hybrid approaches. The details, advantages, and limitations of these approaches are presented, analyzed, and compared. Future trends are presented, and key challenges and opportunities are discussed.}
+}
+
+
+%noMaintenance
+@article{ManteinanceWSN,
+title = {Self-maintenance model for Wireless Sensor Networks},
+journal = {Computers \& Electrical Engineering},
+volume = {70},
+pages = {799-812},
+year = {2018},
+issn = {0045-7906},
+doi = {https://doi.org/10.1016/j.compeleceng.2017.12.022},
+url = {https://www.sciencedirect.com/science/article/pii/S0045790617327660},
+author = {Walaa Elsayed and Mohamed Elhoseny and Sahar Sabbeh and Alaa Riad},
+keywords = {Wireless Sensor Network, Cluster head, Sensor node, Self-detect, Self-diagnosis, Fault recovery},
+abstract = {Wireless Sensor Networks have wide variety of applications and their nodes are prone to failure due to a hardware failure or malicious attacks. The self-healing mechanism is used for fault detection, diagnosis and healing. However, implementing the self-healing procedures at the cluster head affects the network performance. In this paper, we present a distributed self-healing approach for both node and cluster head levels. At node level, battery, sensor and receiver faults can be diagnosed while, at cluster head level, transmitter and mal-functional nodes can be detected and recovered. Compared to the state-of-the art methods, our model tolerates up to 67.3\% of different hardware faults at node level. Moreover, it realized a detection accuracy of sensor circuit fault tolerate up to 76.9\%, 52\% of battery fault and 71.96\% of receiver faults. At head class level, 75.7\% of transmitter fault and 60\% of microcontroller circuit fault are realized.}
+}
+
+%FRAM
+@inproceedings{FRAM,
+author = {Bailey, R. and Fox, Glen and Eliason, Jarrod and Depner, M. and Kim, Dong-pyo and Jabillo, E. and Groat, J. and Walbert, J. and Moise, Theodore and Summerfelt, Scott and Udayakumar, K. and Rodriquez, J. and Remack, K. and Boku, K. and Gertas, J.},
+year = {2005},
+month = {11},
+pages = {485-},
+title = {FRAM memory technology - advantages for low power, fast write, high endurance applications},
+isbn = {0-7695-2451-6},
+doi = {10.1109/ICCD.2005.60}
+}
+
+
+%Optimization
+@inproceedings{OptimizationCompiler,
+author = {Daud, Shuhaizar and Ahmad, R.Badlishah and Murhty, Nukala},
+year = {2008},
+month = {12},
+pages = {1-6},
+title = {The effects of compiler optimizations on embedded system power consumption},
+isbn = {978-1-4244-2315-6},
+doi = {10.1109/ICED.2008.4786702}
+}
+
+%KinectiEnergy
+@article{KineticEnergy,
+author = {Zhu, Dibin and Beeby, Stephen},
+year = {2011},
+month = {01},
+pages = {},
+title = {Kinetic Energy Harvesting},
+isbn = {978-1-4419-7565-2},
+journal = {Energy Harvesting Systems: Principles, Modeling and Applications},
+doi = {10.1007/978-1-4419-7566-9_1}
+}
+
+%Thermal
+@incollection{ThermalEnergy,
+title = {3 - Harvesting thermal energy with ferroelectric materials},
+editor = {Deepam Maurya and Abhijit Pramanick and Dwight Viehland},
+booktitle = {Ferroelectric Materials for Energy Harvesting and Storage},
+publisher = {Woodhead Publishing},
+pages = {85-106},
+year = {2021},
+series = {Woodhead Publishing Series in Electronic and Optical Materials},
+isbn = {978-0-08-102802-5},
+doi = {https://doi.org/10.1016/B978-0-08-102802-5.00003-0},
+url = {https://www.sciencedirect.com/science/article/pii/B9780081028025000030},
+author = {Ravi Anant Kishore},
+keywords = {Ferroelectric, Pyroelectric, Energy harvesting, Thermal energy, Polarization},
+abstract = {Thermal energy is considered the ubiquitous form of energy as all other forms of energy ultimately degrade to thermal energy. Thermal to electrical energy conversion is currently an important method for electricity generation. The traditional power cycles, however, become technically and economically unviable when heat source temperature reduces below 100°C. Thermal energy harvesting has been proposed as a viable alternative for low-grade thermal to electrical energy conversion. Thermal energy harvesting is a method of generating electricity using temperature-induced variations in material properties. It is particularly useful when the heat sources are available free-of-cost, either in the form of natural heat or waste heat. While there are several thermal energy harvesting techniques, pyroelectricity is the most promising as it can be used in situations where spatial thermal gradients are difficult to establish or the temperature of the heat source is changing. Despite the fact that the pyroelectric effect in ferroelectric materials has been known for past several decades, thermal energy harvesting using ferroelectric materials has not been much explored in the literature. In this chapter, we would explore various aspects of thermal energy harvesting using ferroelectric materials. We have first established the physics behind ferroelectricity, then provided a detailed description on ferroelectric thermal energy harvesting, discussed various ferroelectric thermodynamic cycles and devices proposed in the literature, and finally described various other emerging applications of ferroelectricity.}
+}

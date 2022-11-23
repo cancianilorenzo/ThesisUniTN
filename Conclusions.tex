@@ -1,0 +1,26 @@
+\chapter{Conclusion And Future Work}
+\label{cha:conclusion}
+\section{Conclusion}
+In this thesis, a tiny network stack for battery-free communication is designed, implemented and evaluated.\\
+The presented system is published in an open source manner at the project's GitHub page \footnote{https://github.com/cancianilorenzo/Tiny-network-stack-for-battery-free-communication} where it is also possible to find up-to-date documentation.\\
+The stack has the features required in Chapter 1, thus saving data in non-volatile memory, retrieving it to perform sending to the network nodes or to the Application Layer to process it, recognizing expired packets to avoid wasting energy in sending/receiving invalid data, and implementing the TRAP protocol to make nodes aware about the energy available on neighboring nodes.\\
+In addition to this, the presented system is modular in that it adapts to different transmission technologies by replacing only the Physical Layer and is scalable since it is not tied to a fixed number of nodes in the network.\\
+Another feature of the system presented is that it hides implementation complexity from the Application Layer. For this reason, the system exposes only a small set of functions that can be used by the Application Layer. An example of its use is as follows:\\
+\begin{lstlisting}
+....
+while (1)
+{
+    dataProduced(datax, datay, dataj, dataz, destinationNode);
+    dataSend();
+    storedData dataRec = getData();
+
+}
+....
+\end{lstlisting}
+From the evaluation chapter, it was found that the results obtained with the presented stack are better than not using any protocol. In fact, the transmission success rate stands at 100\% if the stack is used, around 26\% if it is not used.\\
+In addition to the loss of data in transmission the stack helps to reduce energy waste, in fact it is important to note that all packets sent and not received due to low energy on the receiving node meant a loss for both nodes: the sending node lost energy for producing and sending the data, while the receiving node lost energy for receiving a portion of the packet.
+
+\section{Future Work}
+Due to lack of time (tests on real data are usually very demanding and take several days to complete a single trial), numerous modifications, tests and experiments have been postponed. Future research will focus on deepening certain mechanisms, new suggestions for testing, new implementation techniques, or simple curiosity to develop something ever better.
+
+\newpage

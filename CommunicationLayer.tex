@@ -1,0 +1,129 @@
+\chapter{Communication Layer}
+\label{cha:Communication Layer}
+The Communication Layer is the intermediary between the Application Layer and the Physical Layer. In this layer, data is received from the physical layer, manipulated, stored in FRAM memory, and then sent to the application layer when requested. Symmetrically, the layer receives data from the Application Layer, structures the packet to be sent, and forwards it to the Physical Layer.
+
+\section{Implementation idea}
+\label{sec:Implementation idea Comm}
+The relevant part of this layer is the storage of received data in the FRAM memory and consequently the proper management of reading and writing from and to the memory.
+The basic idea for the implementation of this layer is to use circular buffers with FIFO (first in, first out) logic. In this way is possible to have different sections of memory for input data (RX) and output data (TX) and the possibility to overwrite old data.
+
+
+\section{Layer diagram}
+\label{sec:Layer diagram Comm}
+This section reinforces, through the use of a diagram, the connection between the layer and the FRAM. 
+  \begin{figure}[H]
+    \centerline{\psfig{file=Images/CommunicationLayerDiagram.png,width=0.5\textwidth}}
+    \caption{\footnotesize \centering Block diagram of Communication Layer}
+    \label{fig:CommunicationLayerDiagram}
+  \end{figure}
+The communication layer, designed in this way, allows data to be restored in case of power failure and so avoid wasting more energy.
+
+
+\section{Real implementation of the layer}
+\label{sec:Real implementation of the layer Comm}
+Since the layer relies on saving data within FRAM memory, it must be declared that variables need to be saved in non-volatile memory. To do this, the TI compiler must be given instructions via the \#pragma directive as follows:
+\begin{lstlisting}
+//Saving the variable "unsigned char writePointer" in non-volatile memory
+#pragma PERSISTENT(writePointer)
+unsigned char writePointer = 0x00;
+\end{lstlisting}
+As is possible to evince the variable saved in memory is of type "unsigned char" and thus has byte size. This allows atomicity of writing and reading as memory is read and written in byte-size blocks.\\
+\subsection{Packet structure}
+Before figuring out how to save the packets to be sent and received, it is worthwhile to define a fixed message structure so that the right amount of memory can be allocated without having any waste and facilitate operations for the physical layer that will have to send the data.\\
+The packet should contain the identifier of the node that produced the data, the data produced by the application layer, a CRC field and a time stamp indicating the time of production of the packet.
+For the reasons explained earlier each field must be one byte in size. The packet is then defined as follows:
+
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{ |c| c| c| c| c| c| c| c|}
+ NODEID & DATA0 & DATA1 & DATA2 & DATA3 & CRC0 & CRC1 & TIMESTAMP\\ 
+\end{tabular}
+\caption{\label{tab:Packet format}Package structure, 64bit}
+\end{center}
+\end{table}
+Looking at the packet structure is possible to see that there are four data fields. This is because the application layer produces 32-bit data that have to be saved in four different 8-bit area to be delivered to the physical layer. By the same logic, are obtained fields needed for the CRC value. A CRC-16 module is used. That gives a 16-bit result, which must be saved in two 8-bit variables CRC0 and CRC1.\\
+
+\subsection{Packet management}
+Now that the message structure has been defined, it is possible to see in detail the implementation choice for saving packets in non-volatile memory.\\
+To save packets in memory, it was chosen to create a struct containing message fields and save an array of these structs in memory. The struct contains an additional field, external to the packet, named "saved" and essential for handling circular buffers on receive and send.\\
+As already introduced, two circular buffers, one for RX data and one for TX data, are used in a FIFO approach. This makes it possible to overwrite old data with new data when there is no more space in the buffer and consume the data saved in the buffers in an orderly manner.\\
+\begin{lstlisting}
+//Initialization of arrays used as circular buffer in FRAM
+#pragma PERSISTENT(storedTX)
+storedData storedTX[FRAM_TX_NUMBER] = { 0x00 };
+
+#pragma PERSISTENT(storedRX)
+storedData storedRX[FRAM_RX_NUMBER] = { 0x00 };
+\end{lstlisting}
+
+Since we do not have to receive and save only one byte for data but the whole packet, so 8 bytes, it is important to have a strategy to check whether the data has been saved correctly or not. This check is important to avoid transmitting incomplete data to the application layer or physical layer in case of power failure. The strategy used is to save all the data and eventually assign the value 0xFF to the "saved" byte. In this way, it will be sufficient to check the value of the "saved" byte to know whether the data have been saved correctly or need to be overwritten in the next iteration.
+
+\subsection{Data saving TX}
+Upon receiving the data from Application layer, packet creation and saving in FRAM begins.\\
+This process can be divided into 5 main parts:\\
+
+\begin{enumerate}
+  \item \subsubsection{Saving producer node identifier}
+  The producer node number is used to identify the sender of the packet; this value is set by the user one time per node at compile time. There should be no nodes with the same value within the network.
+  
+  
+  
+  \item \subsubsection{Saving the received data from the application layer}
+  Data received from the application layer are saved in 4 byte-size variables, data0, data1, data2, and data3. This allows for the atomic storage of data.
+
+  
+  \item \subsubsection{Saving the CRC value generated from the 4 bytes of saved data}
+  Saving the CRC value requires two bytes of memory space. This is necessary because the built-in CRC module on MSP430 boards is 16-bit, meaning that the result can be saved in two bytes. Therefore, the CRC value output from the module is divided into CRC0 and CRC1 and saved in non-volatile memory.
+  \item \subsubsection{Saving the packet production time}
+  The packet production time is saved so that a check can be made on the expiration of the information by the receiving node before the data is used. In this implementation, the saved value is constant, but having a field available in the packet allows for the possibility of introducing data expiration checks in the future.
+  \item \subsubsection{Confirmation of the saving}
+  This is the most important part of saving data. Any power failure before this step would render the data incomplete. To finalize the data saving, the value 0xFF is assigned to the "saved" byte of the structure associated with the newly created packet.
+\end{enumerate}
+
+
+
+
+
+Two variables saved in FRAM are used to manage the TX buffer write and read to avoid accidental data overwriting and wrong sends in case of power failure.\\
+Upon request for data to be sent by the application layer, the communication layer will send the data, byte by byte, to the physical layer, which will be responsible for sending the data to the network nodes.\\
+After the sending operation, the "saved" byte associated with the packet is set to 0x00 to notify the invalidity of the data.\\
+The TX buffer size is easily set by code. Setting it to a high value has consequences on the amount of memory allocated but allows for minimizing data loss by having less turnover.
+\begin{lstlisting}
+#define FRAM_TX_NUMBER 0x03 //# OF DATA STORED IN FRAM FOR TX
+\end{lstlisting}
+  \begin{figure}[H]
+    \centerline{\psfig{file=Images/CommLayerTX.png,width=0.5\textwidth}}
+    \caption{\footnotesize \centering Diagram of TX side of Communication Layer}
+    \label{fig:CommunicationLayerTX}
+  \end{figure}
+
+\subsection{Data saving RX}
+From the RX point of view, the communication layer takes action when the physical layer has received all the data. Notification of this event is made through the A0 timer. The use of the timer is similar to what saw earlier with the timer for the timeout of burst reception (Chapter 3, subsection 3.2). \\
+When the timer generates the interrupt, the communication layer checks whether the number of bytes received is correct. If the number is correct, the save operation starts.\\
+The saving part for RX side can be summarized in 3 steps:
+\begin{enumerate}
+  \item \subsubsection{Saving received packet}
+  The packet is saved as is byte by byte in the persistent RX buffer in FRAM.
+  \item \subsubsection{Checking received packet}
+  After saving the data, a CRC check is performed and the result obtained is compared with the value contained in the packet. If the CRC result matches, the program proceeds to the next step.
+  \item \subsubsection{Packet saving finalization}
+  This section is reached only if the CRC check was successful. To finalize data saving, the value 0xFF is assigned to the "saved" byte of the structure associated with the received packet.
+\end{enumerate}
+
+\begin{lstlisting}
+//Notify that packet pointed by RXPointer is stored successfully
+storedRX[RXPointer].saved = 0xFF;
+\end{lstlisting}
+When the application requests data saved in the RX buffer, the oldest saved data is sent and the save control byte is set to 0x00 to notify that the location in the buffer is ready to be overwritten.
+  \begin{figure}[H]
+    \centerline{\psfig{file=Images/CommLayerRX.png,width=0.5\textwidth}}
+    \caption{\footnotesize \centering Diagram of RX side of Communication Layer}
+    \label{fig:CommunicationLayerRX}
+  \end{figure}
+
+  
+\newpage
+
+
+
+
