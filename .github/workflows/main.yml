@@ -15,7 +15,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: pdfs
-          path: cognome_nome_laurea_aa.pdf
+          path: CancianiLorenzo-A tiny network stack for battery-free communication.pdf
 
       - name: Upload to git
         run: |
